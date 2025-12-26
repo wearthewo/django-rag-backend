@@ -77,9 +77,11 @@ jobs:
           mkdir -p rag/migrations
           touch rag/migrations/__init__.py
 
-          # Create initial migration if it doesn't exist
+          # Create initial migration with the exact name that 0002 expects
           if [ ! -f rag/migrations/0001_initial.py ]; then
-            python manage.py makemigrations rag --empty --name initial
+            python manage.py makemigrations rag --empty
+            # Rename the created migration to match what 0002 expects
+            mv rag/migrations/00*_initial.py rag/migrations/0001_initial.py
           fi
 
           # Create and apply all migrations
