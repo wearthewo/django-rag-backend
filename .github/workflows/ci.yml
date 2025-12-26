@@ -68,21 +68,16 @@ jobs:
           echo "PostgreSQL failed to start"
           exit 1
 
-      - name: Set up migrations
+      - name: Apply migrations (including pgvector)
         working-directory: ./backend
         env:
           DJANGO_SETTINGS_MODULE: config.settings
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/django_rag
         run: |
-          # Enable pgvector extension
-          PGPASSWORD=postgres psql -h localhost -U postgres -d django_rag -c "CREATE EXTENSION IF NOT EXISTS vector;"
-          # Apply all existing migrations
-          python manage.py migrate
+          # Ensure pgvector extension migration is applied first
+          python manage.py migrate rag 0002_enable_pgvector || true
 
-          # Check for model changes and create migrations if needed
-          python manage.py makemigrations --check --dry-run || python manage.py makemigrations
-
-          # Apply any new migrations
+          # Apply all remaining migrations
           python manage.py migrate
 
       - name: Run Django tests
