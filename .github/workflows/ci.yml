@@ -15,9 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      # PostgreSQL with pgvector pre-installed
       postgres:
-        image: ankane/pgvector:postgres-15
+        image: postgres:15
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -30,7 +29,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      # Redis for caching
       redis:
         image: redis:7
         ports:
@@ -52,7 +50,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libpq-dev gcc
+          sudo apt-get install -y libpq-dev gcc postgresql-client
 
       # Install Python dependencies
       - name: Install Python dependencies
@@ -75,6 +73,11 @@ jobs:
           echo "PostgreSQL failed to start"
           exit 1
 
+      # Enable pgvector before migrations
+      - name: Enable pgvector extension
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d django_rag -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
       # Apply migrations
       - name: Apply migrations
         working-directory: ./backend
@@ -82,10 +85,6 @@ jobs:
           DJANGO_SETTINGS_MODULE: config.settings
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/django_rag
         run: |
-          # Ensure pgvector extension exists
-          PGPASSWORD=postgres psql -h localhost -U postgres -d django_rag -c "CREATE EXTENSION IF NOT EXISTS vector;"
-
-          # Apply all migrations
           python manage.py migrate
 
       # Run Django tests
