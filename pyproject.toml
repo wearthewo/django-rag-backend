@@ -20,5 +20,8 @@ dependencies = [
     "qlora>=0.0.1",
     "python-dotenv>=1.0",
     "requests>=2.31",
-    "uvicorn>=0.23",
+    "uvicorn>=0.23", 
+    "django-redis",
+    "drf-extensions",
+    "djangorestframework-ratelimit",
 ]
