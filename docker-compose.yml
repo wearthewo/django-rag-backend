@@ -6,7 +6,7 @@ services:
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     env_file:
-      - .env
+      - .env.docker
     volumes:
       - pgdata:/var/lib/postgresql/data
     command: ["postgres", "-c", "shared_preload_libraries=pgvector"]
@@ -16,7 +16,7 @@ services:
     ports:
       - "${REDIS_PORT:-6379}:6379"
     env_file:
-      - .env
+      - .env.docker
 
   web:
     build: .
@@ -26,7 +26,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - .env.docker
     depends_on:
       - db
       - redis
