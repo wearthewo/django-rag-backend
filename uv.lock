@@ -125,12 +125,16 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "django" },
+    { name = "django-redis" },
     { name = "djangorestframework" },
+    { name = "djangorestframework-ratelimit" },
     { name = "djangorestframework-simplejwt" },
+    { name = "drf-extensions" },
     { name = "faiss-cpu" },
     { name = "langchain" },
     { name = "lora" },
     { name = "peft" },
+    { name = "pgvector" },
     { name = "psycopg2-binary" },
     { name = "python-dotenv" },
     { name = "qlora" },
@@ -144,12 +148,16 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "django", specifier = ">=4.2" },
+    { name = "django-redis" },
     { name = "djangorestframework", specifier = ">=3.14" },
+    { name = "djangorestframework-ratelimit" },
     { name = "djangorestframework-simplejwt", specifier = "<=5.5.1" },
+    { name = "drf-extensions" },
     { name = "faiss-cpu", specifier = ">=1.7" },
     { name = "langchain", specifier = ">=0.1" },
     { name = "lora", specifier = ">=0.1" },
     { name = "peft", specifier = ">=0.4.0" },
+    { name = "pgvector", specifier = ">=0.2.4" },
     { name = "psycopg2-binary", specifier = ">=2.9" },
     { name = "python-dotenv", specifier = ">=1.0" },
     { name = "qlora", specifier = ">=0.0.1" },
@@ -158,6 +166,19 @@ requires-dist = [
     { name = "sentence-transformers", specifier = ">=2.2" },
     { name = "transformers", specifier = ">=4.30" },
     { name = "uvicorn", specifier = ">=0.23" },
+]
+
+[[package]]
+name = "django-redis"
+version = "6.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "redis" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/08/53/dbcfa1e528e0d6c39947092625b2c89274b5d88f14d357cee53c4d6dbbd4/django_redis-6.0.0.tar.gz", hash = "sha256:2d9cb12a20424a4c4dde082c6122f486628bae2d9c2bee4c0126a4de7fda00dd", size = 56904, upload-time = "2025-06-17T18:15:46.376Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7e/79/055dfcc508cfe9f439d9f453741188d633efa9eab90fc78a67b0ab50b137/django_redis-6.0.0-py3-none-any.whl", hash = "sha256:20bf0063a8abee567eb5f77f375143c32810c8700c0674ced34737f8de4e36c0", size = 33687, upload-time = "2025-06-17T18:15:34.165Z" },
 ]
 
 [[package]]
@@ -173,6 +194,18 @@ wheels = [
 ]
 
 [[package]]
+name = "djangorestframework-ratelimit"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b6/8d/e6ab3a12554df38fa731333a55d4086bf4c4817a7378013b2f2da518964b/djangorestframework_ratelimit-1.0.0.tar.gz", hash = "sha256:ce0a77409d67ca7f07c8cb724fbc476121c766b172c17469f0bd40058438ca30", size = 10917, upload-time = "2024-06-02T23:12:47.895Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fe/91/b1c4ceb4dc3c1541d437cd069f0df2ac6946f2017964943ff87ca8cb7b2f/djangorestframework_ratelimit-1.0.0-py2.py3-none-any.whl", hash = "sha256:81cbd9a87e8c2eeedb433ac45999336cb918c0804f8c9a714c1a666c1bc35f59", size = 12126, upload-time = "2024-06-02T23:12:46.602Z" },
+]
+
+[[package]]
 name = "djangorestframework-simplejwt"
 version = "5.5.1"
 source = { registry = "https://pypi.org/simple" }
@@ -184,6 +217,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a8/27/2874a325c11112066139769f7794afae238a07ce6adf96259f08fd37a9d7/djangorestframework_simplejwt-5.5.1.tar.gz", hash = "sha256:e72c5572f51d7803021288e2057afcbd03f17fe11d484096f40a460abc76e87f", size = 101265, upload-time = "2025-07-21T16:52:25.026Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/60/94/fdfb7b2f0b16cd3ed4d4171c55c1c07a2d1e3b106c5978c8ad0c15b4a48b/djangorestframework_simplejwt-5.5.1-py3-none-any.whl", hash = "sha256:2c30f3707053d384e9f315d11c2daccfcb548d4faa453111ca19a542b732e469", size = 107674, upload-time = "2025-07-21T16:52:07.493Z" },
+]
+
+[[package]]
+name = "drf-extensions"
+version = "0.7.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "djangorestframework" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ac/89/5ccaef1619cfba44ab4f17f7f4863e2d5683758c7e03cae137b4a20f670b/drf-extensions-0.7.1.tar.gz", hash = "sha256:90abfc11a2221e8daf4cd54457e41ed38cd71134678de9622e806193db027db1", size = 126642, upload-time = "2021-07-30T08:05:11.345Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/58/15/ee46fa8293a51b68c60699806c0c2f55ff527613d83739e27b8f85444990/drf_extensions-0.7.1-py2.py3-none-any.whl", hash = "sha256:007910437e64aa1d5ad6fc47266a4ac4280e31761e6458eb30fcac7494ac7d4e", size = 21138, upload-time = "2021-07-30T08:05:07.801Z" },
 ]
 
 [[package]]
@@ -754,6 +799,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/4b/0c/f2938db546ac7fc961ab5917cd50fcf5d0d70b406de93e3faccaa504e152/peft-0.18.0.tar.gz", hash = "sha256:c81c80b2056ab40c23d58ef25f74daab417ac653970718589a11a8af28218588", size = 634141, upload-time = "2025-11-13T11:13:06.603Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0f/55/481bf25613d40ef53534f664deba7b138fe566356b6ca10304e2b3b2529c/peft-0.18.0-py3-none-any.whl", hash = "sha256:624f69ca6393b765ccc6734adda7ca57d80b238f0900a42c357d8b67a03d62ff", size = 556427, upload-time = "2025-11-13T11:13:03.664Z" },
+]
+
+[[package]]
+name = "pgvector"
+version = "0.4.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/25/6c/6d8b4b03b958c02fa8687ec6063c49d952a189f8c91ebbe51e877dfab8f7/pgvector-0.4.2.tar.gz", hash = "sha256:322cac0c1dc5d41c9ecf782bd9991b7966685dee3a00bc873631391ed949513a", size = 31354, upload-time = "2025-12-05T01:07:17.87Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5a/26/6cee8a1ce8c43625ec561aff19df07f9776b7525d9002c86bceb3e0ac970/pgvector-0.4.2-py3-none-any.whl", hash = "sha256:549d45f7a18593783d5eec609ea1684a724ba8405c4cb182a0b2b08aeff04e08", size = 27441, upload-time = "2025-12-05T01:07:16.536Z" },
 ]
 
 [[package]]
