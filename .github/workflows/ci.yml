@@ -74,6 +74,8 @@ jobs:
           DJANGO_SETTINGS_MODULE: config.settings
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/django_rag
         run: |
+          # Enable pgvector extension
+          PGPASSWORD=postgres psql -h localhost -U postgres -d django_rag -c "CREATE EXTENSION IF NOT EXISTS vector;"
           # Apply all existing migrations
           python manage.py migrate
 
