@@ -60,6 +60,7 @@ jobs:
           exit 1
 
       - name: Run Django migrations
+        working-directory: ./backend
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/django_rag
           DJANGO_SETTINGS_MODULE: config.settings
@@ -68,6 +69,7 @@ jobs:
           python manage.py migrate --noinput
 
       - name: Run Django tests
+        working-directory: ./backend
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/django_rag
           DJANGO_SETTINGS_MODULE: config.settings
