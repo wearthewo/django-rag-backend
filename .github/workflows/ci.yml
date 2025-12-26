@@ -79,7 +79,7 @@ jobs:
 
           # Create initial migration if it doesn't exist
           if [ ! -f rag/migrations/0001_initial.py ]; then
-            python manage.py makemigrations rag --empty --name 0001_initial
+            python manage.py makemigrations rag --empty --name initial
           fi
 
           # Create and apply all migrations
