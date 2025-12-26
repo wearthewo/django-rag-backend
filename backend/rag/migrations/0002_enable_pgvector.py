@@ -1,15 +1,14 @@
-# yourapp/migrations/0002_enable_pgvector.py
-from django.db import migrations, connection
 
-def enable_pgvector(apps, schema_editor):
-    with connection.cursor() as cursor:
-        cursor.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('yourapp', '0001_initial'),
+        ('rag', '0001_initial'),  
     ]
 
     operations = [
-        migrations.RunPython(enable_pgvector),
+        migrations.RunSQL(
+            "CREATE EXTENSION IF NOT EXISTS vector;",
+            "DROP EXTENSION IF EXISTS vector;"
+        ),
     ]
