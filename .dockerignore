@@ -1,29 +1,30 @@
 # Git
 .git
+.gitignore
 .github/
 
-# Python
+# Python cache and compiled files
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.python-version
 .pytest_cache/
 .mypy_cache/
 *.pyc
 *.pyo
 *.pyd
 .Python
+
+# Virtual environments
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
 
-# Environment variables
+# Environment variables (don't include secrets)
 .env
 .env.*
-!.env.example
 
 # Local development / Docker overrides
 docker-compose.override.yml
