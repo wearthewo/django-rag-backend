@@ -1,112 +1,115 @@
-# Django RAG Backend
+Shortest Shop Recommendation System
 
-This project implements a Django REST API backend that allows users to ask questions such as “Which is the shortest shop in a category?” and get answers using Retrieval-Augmented Generation (RAG) techniques.
+This project implements a semantic + geographic shop recommendation system using Django, PostgreSQL, pgvector, and Redis. It provides fast and accurate shop recommendations based on user queries and location.
 
-RAG combines a knowledge retrieval step with a language model (LLM) step.
+Algorithm: Shortest Shop
 
-The system retrieves relevant information from structured or vectorized data, then uses the LLM to generate a precise answer.
+The system finds the best shop using a combination of semantic similarity and geographic proximity.
 
-This enables the app to answer user queries over shop data without needing the entire dataset in the LLM.
+Key Components
 
-Core AI Components
-Embeddings
+1. retrieve_shops function
 
-Text or metadata (e.g., shop names, categories, descriptions, distances) is converted into vector embeddings using sentence-transformers.
-
-Embeddings allow semantic search in high-dimensional vector space.
-
-Stored in a vector store, currently using FAISS (CPU) or Redis for caching & retrieval.
-
-Vector Retrieval (Retriever)
-
-The retriever performs nearest neighbor search in the vector space.
+Retrieves candidate shops from the database with optional filtering:
 
 Steps:
 
-Convert user query into an embedding.
+Convert the user query into a vector embedding (embed_text).
 
-Compare query embedding with stored shop embeddings.
+Pre-filter shops by category (if provided).
 
-Retrieve the top-k most relevant shops based on similarity.
+Annotate each shop with cosine distance to the query embedding using pgvector.
 
-Vector similarity metric: typically cosine similarity.
+Compute geographic distance from the user using the Haversine formula.
 
-## 🚀 Features
+Compute a combined score:
 
-- **RAG System**: Combines retrieval-based and generative AI approaches
-- **Vector Search**: Efficient similarity search with pgvector
-- **JWT Authentication**: Secure API access control
-- **Redis Caching**: High-performance response caching
-- **Dockerized**: Easy deployment with Docker and Docker Compose
-- **NGINX**: Reverse proxy and load balancing
-- **CI/CD**: Automated testing and deployment with GitHub Actions
+combined_score = semantic_distance + (geo_distance / 10)
 
-## 🏗️ Architecture
+Sort by combined score and return the top 5 shops.
 
-### 1. System Overview
+2. shortest_shop_agent function
 
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ │ │ │ │ │ │ │ Client App │───▶│ NGINX (80) │───▶│ Django (8000) │ │ │ │ │ │ │ └─────────────────┘ └─────────────────┘ └────────┬────────┘ │ ▼ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ │ │ │ │ │ │ │ PostgreSQL │◀───│ pgvector │◀───│ RAG System │ │ (pgvector) │ │ (Vector DB) │ │ │ │ │ │ │ └────────┬────────┘ └─────────────────┘ └─────────────────┘ │ │ ┌─────────────────┐ ┌─────────────────┐ │ │ │ │ │ │ │ Redis │◀───│ Cache │◀──────────┘ │ (Caching) │ │ │ │ │ │ │ └─────────────────┘ └─────────────────┘
+Selects the single best shop based on retrieved candidates:
 
-### 2. Technology Stack
+Steps:
 
-#### Backend
+Retrieve candidate shops using retrieve_shops.
 
-- **Django 4.2**: High-level Python web framework
-- **Django REST Framework**: For building Web APIs
-- **Django REST Framework Simple JWT**: For JWT authentication
+Compute the combined score for each shop.
 
-#### Database
+Skip shops outside the geographic cutoff.
 
-- **PostgreSQL 15**: Primary database
-- **pgvector**: For vector similarity search
-- **Redis**: For caching and rate limiting
+Select the shop with the lowest combined score.
 
-#### AI/ML
+Return detailed info:
 
-- **RAG System**: Combines retrieval and generation
-- **Sentence Transformers**: For generating document embeddings
-- **LangChain**: For building the RAG pipeline
+Shop name
 
-#### Infrastructure
+Category
 
-- **Docker**: Containerization
-- **Docker Compose**: Multi-container orchestration
-- **NGINX**: Reverse proxy and load balancer
+Distance from user
 
-#### CI/CD
+Semantic score
 
-- **GitHub Actions**: For CI/CD pipeline
-- **Automated Testing**: Unit and integration tests
-- **Automated Deployment**: To staging/production
+Combined score
 
-### 3. Data Flow
+Why This Algorithm Works:
 
-1. **Request Handling**:
+Semantic search with pgvector captures meaning, not just keywords.
 
-   - Client sends request to NGINX
-   - NGINX forwards to Django app
-   - Middleware processes the request
+Geographic filtering ensures relevance to user location.
 
-2. **RAG Processing**:
+Top-K pre-filtering improves efficiency.
 
-   - Query is converted to embedding
-   - Vector search finds relevant documents
-   - Context is passed to the language model
-   - Response is generated and returned
+Combined scoring balances relevance and proximity.
 
-3. **Caching**:
-   - Common queries are cached in Redis
-   - Subsequent identical requests are served from cache
+CI/CD Workflow (GitHub Actions)
 
-This project uses uv
-for managing the Python environment and dependencies.
+The project uses a two-stage CI/CD pipeline:
 
-Why uv?
+1. Build and Test
 
-Unified environment + dependency management: uv combines virtual environment creation, dependency resolution, and lockfile management in a single tool.
+Services: PostgreSQL with pgvector and Redis.
 
-Lockfile support (uv.lock): Ensures reproducible installs across machines and Docker containers.
+Dependency caching: Install Python packages before copying source code → faster repeated builds.
 
-Automatic Python selection: uv can pin a specific Python version (e.g., Python 3.14) for the project.
+Health checks: Wait for DB and Redis readiness.
 
-Sync from pyproject.toml or requirements.txt: Makes installation consistent and traceable.
+Tests: Run Django unit tests to ensure code correctness.
+
+2. Build and Push Docker
+
+Disk cleanup to avoid space issues on GitHub runners.
+
+Docker Buildx with caching: Reuse layers for dependencies → faster builds.
+
+Selective Docker push: Only pushes on main branch → PRs run tests only.
+
+Slim Python base image: Smaller image, faster pull times.
+
+Workflow Summary:
+
+Pull Requests → Run only tests for fast feedback.
+
+Push to main / merged PRs → Run full CI/CD including Docker build & push.
+
+Backend and Infrastructure Features
+
+Backend: Django REST Framework
+
+PostgreSQL + pgvector for semantic search
+
+Redis for caching and async tasks
+
+JWT authentication
+
+Rate limiting
+
+Infrastructure / Deployment:
+
+Docker for containerization
+
+NGINX as reverse proxy
+
+GitHub Actions for CI/CD pipeline
