@@ -1,35 +1,34 @@
-# ---------- builder ----------
-FROM python:3.14-slim AS builder
-
-WORKDIR /wheels
-
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt .
-RUN pip install --upgrade pip \
-    && pip wheel --no-cache-dir --no-deps -r requirements.txt
-
-
-# ---------- runtime ----------
+# Use a slim Python 3.14 image for smaller size
 FROM python:3.14-slim
 
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+# Set working directory
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y \
+# Install system dependencies for PostgreSQL, Redis, and Python packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
     libpq-dev \
+    gcc \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /wheels /wheels
-RUN pip install --no-cache-dir /wheels/*
+# Copy requirements first for caching
+COPY requirements.txt /app/
 
-COPY backend/ backend/
+# Upgrade pip and install Python dependencies without caching to reduce image size
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir psycopg2-binary django-redis
 
+# Copy project files
+COPY . /app/
+
+# Expose port for Uvicorn / Django
 EXPOSE 8000
 
-CMD ["uvicorn", "backend.config.asgi:application", "--host", "0.0.0.0", "--port", "8000"]
+# Run Django with Uvicorn (ASGI)
+CMD ["uvicorn", "backend.config.asgi:application", "--host", "0.0.0.0", "--port", "8000", "--reload"]
