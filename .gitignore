@@ -1,13 +1,11 @@
 # Git
 .git
-.github/
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.python-version
 .pytest_cache/
 .mypy_cache/
 *.pyc
@@ -44,6 +42,20 @@ docker-compose.volumes.local.yml
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+agents/
+
+# Frontend build and dependency output
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+# Downloaded OpenStreetMap extracts and local backups
+data/*.osm.pbf
+data/*.osm.pbf.part
+backups/
 
 # Logs and media
 /logs/

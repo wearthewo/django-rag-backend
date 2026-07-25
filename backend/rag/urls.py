@@ -1,9 +1,11 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import ShopSearchView
+
+from .views import CategoryListView, HealthView, LocationListView, RecommendationView, ShopDetailView
 
 urlpatterns = [
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/shops/', ShopSearchView.as_view(), name='shop_search'),
+    path("recommendations", RecommendationView.as_view(), name="recommendations"),
+    path("shops/<slug:slug>", ShopDetailView.as_view(), name="shop-detail"),
+    path("categories", CategoryListView.as_view(), name="categories"),
+    path("locations", LocationListView.as_view(), name="locations"),
+    path("health", HealthView.as_view(), name="health"),
 ]

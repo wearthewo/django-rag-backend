@@ -1,0 +1,12 @@
+@import "maplibre-gl/dist/maplibre-gl.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #17221c; background: #f7f3ea; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button, input, textarea { font: inherit; }
+.maplibregl-map { font-family: inherit; }
+.maplibregl-ctrl-attrib { font-size: 10px; }
+.shop-marker { width: 2rem; height: 2rem; border: 3px solid white; border-radius: 999px; background: #245c3a; color: white; font-size: 0.68rem; font-weight: 800; box-shadow: 0 4px 14px rgba(0,0,0,.28); cursor: pointer; }
+.shop-marker[data-active="true"] { background: #ef765c; transform: scale(1.18); }
