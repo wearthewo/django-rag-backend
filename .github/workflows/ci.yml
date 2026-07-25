@@ -17,25 +17,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    services:
-      postgres:
-        image: postgis/postgis:16-3.4
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: django_rag
-        ports: ["5432:5432"]
-        options: >-
-          --health-cmd "pg_isready -U postgres -d django_rag"
-          --health-interval 5s --health-timeout 5s --health-retries 12
     steps:
       - uses: actions/checkout@v4
-      - name: Install pgvector
+      - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y gdal-bin libgdal-dev
-          docker exec ${{ job.services.postgres.id }} apt-get update
-          docker exec ${{ job.services.postgres.id }} apt-get install -y postgresql-16-pgvector
+      - name: Start PostGIS and pgvector
+        run: |
+          cp .env.example .env
+          docker compose --profile core up -d --build --wait db
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -71,6 +62,8 @@ jobs:
         working-directory: frontend
       - name: Validate and build Docker services
         run: |
-          cp .env.example .env
           docker compose --profile full --profile import config --quiet
           docker compose --profile core build db web frontend
+      - name: Stop test services
+        if: always()
+        run: docker compose --profile core down --volumes
