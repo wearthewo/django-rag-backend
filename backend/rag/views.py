@@ -47,7 +47,9 @@ class RecommendationView(APIView):
         serializer.is_valid(raise_exception=True)
         values = serializer.validated_data
         shops = find_shops(values["question"], values["area"], values.get("filters", {}))
-        wants_stream = request.query_params.get("stream") == "true" or "text/event-stream" in request.headers.get("Accept", "")
+        wants_stream = request.query_params.get(
+            "stream"
+        ) == "true" or "text/event-stream" in request.headers.get("Accept", "")
         if wants_stream:
             return self._stream(values, shops)
         answer = generate_answer(values["question"], values["language"], shops)
@@ -62,7 +64,9 @@ class RecommendationView(APIView):
                     yield _sse("answer_delta", {"text": chunk})
                 yield _sse("done", {"ok": True})
             except Exception:
-                yield _sse("error", {"code": "generation_failed", "message": "Answer generation failed."})
+                yield _sse(
+                    "error", {"code": "generation_failed", "message": "Answer generation failed."}
+                )
 
         response = StreamingHttpResponse(events(), content_type="text/event-stream")
         response["Cache-Control"] = "no-cache"
@@ -84,10 +88,7 @@ class CategoryListView(APIView):
     throttle_classes = ()
 
     def get(self, request):
-        return Response([
-            {"key": key, **labels}
-            for key, labels in CATEGORIES.items()
-        ])
+        return Response([{"key": key, **labels} for key, labels in CATEGORIES.items()])
 
 
 class LocationListView(APIView):

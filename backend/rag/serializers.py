@@ -33,7 +33,9 @@ class RecommendationRequestSerializer(serializers.Serializer):
         if geometry.geom_type != "Polygon":
             raise serializers.ValidationError("Area must be a GeoJSON Polygon.")
         if geometry.empty or not geometry.valid:
-            raise serializers.ValidationError("Area must be a valid, non-self-intersecting polygon.")
+            raise serializers.ValidationError(
+                "Area must be a valid, non-self-intersecting polygon."
+            )
         min_x, min_y, max_x, max_y = geometry.extent
         gr_min_x, gr_min_y, gr_max_x, gr_max_y = GREECE_BOUNDS
         if min_x < gr_min_x or min_y < gr_min_y or max_x > gr_max_x or max_y > gr_max_y:
@@ -57,8 +59,18 @@ class ShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = (
-            "id", "slug", "name", "name_el", "name_en", "category", "address",
-            "phone", "website", "opening_hours", "latitude", "longitude",
+            "id",
+            "slug",
+            "name",
+            "name_el",
+            "name_en",
+            "category",
+            "address",
+            "phone",
+            "website",
+            "opening_hours",
+            "latitude",
+            "longitude",
         )
 
     def get_latitude(self, obj):

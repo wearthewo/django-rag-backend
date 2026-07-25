@@ -16,9 +16,9 @@ class Command(BaseCommand):
             queryset = queryset.filter(embedding__isnull=True)
         updated = 0
         for shop in queryset.iterator(chunk_size=100):
-            text = " ".join(filter(None, (
-                shop.name, shop.name_el, shop.name_en, shop.category, shop.address
-            )))
+            text = " ".join(
+                filter(None, (shop.name, shop.name_el, shop.name_en, shop.category, shop.address))
+            )
             shop.embedding = embed_text(text)
             shop.save(update_fields=("embedding",))
             updated += 1

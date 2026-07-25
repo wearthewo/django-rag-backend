@@ -4,17 +4,18 @@ from unittest.mock import patch
 
 from django.contrib.gis.geos import Point
 from django.test import SimpleTestCase, override_settings
-from rest_framework.test import APIClient
 from requests import RequestException
+from rest_framework.test import APIClient
 
-from .ollama import deterministic_answer, generate_answer
 from .intent import infer_categories, normalize_search_text
+from .ollama import deterministic_answer, generate_answer
 from .serializers import RecommendationRequestSerializer, ShopSerializer
-
 
 ATHENS_POLYGON = {
     "type": "Polygon",
-    "coordinates": [[[23.70, 37.95], [23.77, 37.95], [23.77, 38.01], [23.70, 38.01], [23.70, 37.95]]],
+    "coordinates": [
+        [[23.70, 37.95], [23.77, 37.95], [23.77, 38.01], [23.70, 38.01], [23.70, 37.95]]
+    ],
 }
 
 
@@ -45,7 +46,9 @@ class RecommendationValidationTests(SimpleTestCase):
     def test_rejects_self_intersecting_polygon(self):
         area = {
             "type": "Polygon",
-            "coordinates": [[[23.70, 37.95], [23.77, 38.01], [23.77, 37.95], [23.70, 38.01], [23.70, 37.95]]],
+            "coordinates": [
+                [[23.70, 37.95], [23.77, 38.01], [23.77, 37.95], [23.70, 38.01], [23.70, 37.95]]
+            ],
         }
         serializer = RecommendationRequestSerializer(data=self.payload(area))
         self.assertFalse(serializer.is_valid())

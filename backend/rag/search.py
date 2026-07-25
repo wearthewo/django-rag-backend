@@ -67,7 +67,9 @@ def find_shops(question, area, filters):
     for shop in candidates:
         distance_km = shop.distance.km
         semantic_distance = getattr(shop, "semantic_distance", None)
-        semantic = 0.0 if semantic_distance is None else max(0.0, min(1.0, 1 - float(semantic_distance)))
+        semantic = (
+            0.0 if semantic_distance is None else max(0.0, min(1.0, 1 - float(semantic_distance)))
+        )
         lexical = max(0.0, min(float(shop.lexical_similarity or 0), 1.0))
         proximity = max(0.0, 1 - distance_km / radius_km)
         score = 0.55 * semantic + 0.25 * lexical + 0.20 * proximity
@@ -77,13 +79,17 @@ def find_shops(question, area, filters):
 
     ranked.sort(key=lambda item: (-item[0], item[1]))
     results = []
-    for index, (score, distance_km, semantic, lexical, shop) in enumerate(ranked[:20], start=1):
+    for index, (_score, distance_km, semantic, lexical, shop) in enumerate(
+        ranked[:20], start=1
+    ):
         data = ShopSerializer(shop).data
-        data.update({
-            "reference": f"S{index}",
-            "distance_km": round(distance_km, 2),
-            "match_reason": _match_reason(semantic, lexical, distance_km, bool(categories)),
-        })
+        data.update(
+            {
+                "reference": f"S{index}",
+                "distance_km": round(distance_km, 2),
+                "match_reason": _match_reason(semantic, lexical, distance_km, bool(categories)),
+            }
+        )
         results.append(data)
     return results
 

@@ -12,9 +12,17 @@ _generation_slot = threading.BoundedSemaphore(value=1)
 
 def deterministic_answer(shops, language):
     if not shops:
-        return "Δεν βρέθηκαν σχετικά καταστήματα στην περιοχή." if language == "el" else "No matching shops were found in the selected area."
+        return (
+            "Δεν βρέθηκαν σχετικά καταστήματα στην περιοχή."
+            if language == "el"
+            else "No matching shops were found in the selected area."
+        )
     names = ", ".join(f"[{shop['reference']}] {shop['name']}" for shop in shops[:3])
-    prefix = "Οι καλύτερες διαθέσιμες επιλογές είναι" if language == "el" else "The strongest available options are"
+    prefix = (
+        "Οι καλύτερες διαθέσιμες επιλογές είναι"
+        if language == "el"
+        else "The strongest available options are"
+    )
     return f"{prefix}: {names}."
 
 
@@ -24,7 +32,8 @@ def build_prompt(question, language, shops):
         "You are a local shop recommendation assistant. Answer only from the supplied records. "
         "Cite every recommended shop using its exact [S<number>] reference. Never invent facts, "
         "opening hours, amenities, or shops. If the records do not establish a requested feature, "
-        "say so. Be concise. Reply in Greek when language=el and English when language=en. /no_think\n"
+        "say so. Be concise. Reply in Greek for language=el and English for language=en. "
+        "/no_think\n"
         f"language={language}\nquestion={question}\nrecords={records}"
     )
 

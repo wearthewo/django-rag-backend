@@ -30,9 +30,7 @@ class Shop(models.Model):
             )
         ]
         indexes = [
-            models.Index(
-                fields=("category", "is_published"), name="rag_shop_category_idx"
-            ),
+            models.Index(fields=("category", "is_published"), name="rag_shop_category_idx"),
             GinIndex(fields=("name",), name="shop_name_trgm", opclasses=("gin_trgm_ops",)),
             GinIndex(fields=("name_el",), name="shop_name_el_trgm", opclasses=("gin_trgm_ops",)),
             GinIndex(fields=("name_en",), name="shop_name_en_trgm", opclasses=("gin_trgm_ops",)),

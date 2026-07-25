@@ -101,9 +101,18 @@ class POIHandler(osmium.SimpleHandler):
             Shop,
             self.shop_records,
             (
-                "slug", "name", "name_el", "name_en", "category", "address",
-                "phone", "website", "opening_hours", "location",
-                "source_updated_at", "is_published",
+                "slug",
+                "name",
+                "name_el",
+                "name_en",
+                "category",
+                "address",
+                "phone",
+                "website",
+                "opening_hours",
+                "location",
+                "source_updated_at",
+                "is_published",
             ),
             batch_size,
         )
@@ -118,8 +127,9 @@ class POIHandler(osmium.SimpleHandler):
     def _upsert(model, records, update_fields, batch_size):
         existing = {
             (osm_type, osm_id): pk
-            for osm_type, osm_id, pk in model.objects.filter(osm_id__isnull=False)
-            .values_list("osm_type", "osm_id", "pk")
+            for osm_type, osm_id, pk in model.objects.filter(osm_id__isnull=False).values_list(
+                "osm_type", "osm_id", "pk"
+            )
         }
         creates = []
         updates = []
@@ -187,7 +197,9 @@ class Command(BaseCommand):
         else:
             handler.apply_file(osm_source, locations=True, idx="flex_mem")
         handler.flush()
-        self.stdout.write(self.style.SUCCESS(
-            f"Imported/updated {len(handler.shop_records)} shops and "
-            f"{len(handler.settlement_records)} settlements"
-        ))
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Imported/updated {len(handler.shop_records)} shops and "
+                f"{len(handler.settlement_records)} settlements"
+            )
+        )

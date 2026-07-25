@@ -1,6 +1,12 @@
 from django.urls import path
 
-from .views import CategoryListView, HealthView, LocationListView, RecommendationView, ShopDetailView
+from .views import (
+    CategoryListView,
+    HealthView,
+    LocationListView,
+    RecommendationView,
+    ShopDetailView,
+)
 
 urlpatterns = [
     path("recommendations", RecommendationView.as_view(), name="recommendations"),
