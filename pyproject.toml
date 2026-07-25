@@ -1,27 +1,35 @@
 [project]
 name = "django-rag-backend"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.2.0"
+description = "Map-first local AI shop discovery for Greece"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.12,<3.13"
 dependencies = [
-    "Django>=4.2",
-    "djangorestframework>=3.14",
-    "djangorestframework-simplejwt<=5.5.1",
-    "psycopg2-binary>=2.9",
-    "pgvector>=0.2.4",
-    "redis>=5.0",
-    "transformers>=4.30",
-    "sentence-transformers>=2.2",
-    "faiss-cpu>=1.7",
-    "langchain>=0.1",
-    "peft>=0.4.0",
-    "lora>=0.1",
-    "qlora>=0.0.1",
-    "python-dotenv>=1.0",
-    "requests>=2.31",
-    "uvicorn>=0.23", 
-    "django-redis",
-    "drf-extensions",
-    "djangorestframework-ratelimit",
+    "Django==5.2.5",
+    "djangorestframework==3.16.1",
+    "djangorestframework-simplejwt==5.5.1",
+    "django-cors-headers==4.7.0",
+    "django-redis==6.0.0",
+    "psycopg[binary]==3.2.9",
+    "pgvector==0.4.1",
+    "celery==5.5.3",
+    "requests==2.32.4",
+    "python-dotenv==1.1.1",
+    "uvicorn==0.35.0",
+    "gunicorn==23.0.0",
+    "osmium==4.1.1",
 ]
+
+
+[dependency-groups]
+dev = [
+    "coverage==7.10.2",
+    "ruff==0.12.8",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
